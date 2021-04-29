@@ -20,13 +20,13 @@ export SLACK_SIGNING_SECRET=<your-signing-secret>
 
 ```zsh
 # Clone this project onto your machine
-git clone https://github.com/slackapi/bolt-js-getting-started-app.git
+git clone https://github.com/yoshimaru46/slack-random-member.git
 
 # Change into the project
-cd bolt-js-getting-started-app/
+cd slack-random-member/
 
 # Install the dependencies
-npm install
+yarn
 ```
 
 ### 3. Start servers
@@ -34,8 +34,8 @@ npm install
 [Setup ngrok][3] to create a local requests URL for development.
 
 ```zsh
-npm run ngrok
-npm run start
+yarn run ngrok
+yarn run start
 ```
 
 ## Contributing
@@ -55,17 +55,26 @@ See you there and thanks for helping to improve Bolt for everyone!
 [3]: https://slack.dev/bolt-js/tutorial/getting-started#setting-up-events
 [4]: https://github.com/slackapi/bolt-js/issues/new
 
-## デプロイ方法
+## How to deploy
 
-### 環境変数の設定
+refs: https://slack.dev/bolt-js/ja-jp/deployments/heroku
+
+### 1. Create heroku app
+
+```sh
+heroku create
+```
+
+### 2. Setup environment variables
 
 ```sh
 heroku config:set SLACK_SIGNING_SECRET=hoge
 heroku config:set SLACK_BOT_TOKEN=xoxb-fuga
 ```
 
-### デプロイ
+### 2. Deploy
 
 ```sh
 git push heroku master
+heroku ps:scale web=1
 ```
