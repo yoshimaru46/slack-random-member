@@ -38,23 +38,6 @@ yarn run ngrok
 yarn run start
 ```
 
-## Contributing
-
-### Issues and questions
-
-Found a bug or have a question about this project? We'd love to hear from you!
-
-1. Browse to [slackapi/bolt-js/issues][4]
-1. Create a new issue
-1. Select the `[x] examples` category
-
-See you there and thanks for helping to improve Bolt for everyone!
-
-[1]: https://slack.dev/bolt-js/tutorial/getting-started
-[2]: https://slack.dev/bolt-js/
-[3]: https://slack.dev/bolt-js/tutorial/getting-started#setting-up-events
-[4]: https://github.com/slackapi/bolt-js/issues/new
-
 ## How to deploy
 
 refs: https://slack.dev/bolt-js/ja-jp/deployments/heroku
