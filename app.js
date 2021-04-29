@@ -1,45 +1,60 @@
-const { App } = require('@slack/bolt');
+const {App} = require('@slack/bolt');
+const {WebClient} = require('@slack/web-api');
 
+const token = process.env.SLACK_BOT_TOKEN;
+const signingSecret = process.env.SLACK_SIGNING_SECRET
+
+const web = new WebClient(token);
 // Initializes your app with your bot token and signing secret
 const app = new App({
-  token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET
+  token,
+  signingSecret
 });
 
-// Listens to incoming messages that contain "hello"
-app.message('hello', async ({ message, say }) => {
-  // say() sends a message to the channel where the event was triggered
-  await say({
-    blocks: [
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": `Hey there <@${message.user}>!`
-        },
-        "accessory": {
-          "type": "button",
-          "text": {
-            "type": "plain_text",
-            "text": "Click Me"
-          },
-          "action_id": "button_click"
-        }
-      }
-    ],
-    text: `Hey there <@${message.user}>!`
-  });
-});
+function shuffle(arr) {
+  let n = arr.length;
+  let temp, i;
 
-app.action('button_click', async ({ body, ack, say }) => {
-  // Acknowledge the action
+  while (n) {
+    i = Math.floor(Math.random() * n--);
+    temp = arr[n];
+    arr[n] = arr[i];
+    arr[i] = temp;
+  }
+  return arr;
+}
+
+app.command('/random', async ({command, ack, say}) => {
+  // コマンドリクエストを確認
   await ack();
-  await say(`<@${body.user.id}> clicked the button`);
+
+  if (command.text === '') {
+    await say(`/random [@グループ名] [数] の形式で入力してください！`);
+    return
+  }
+
+  const args = command.text.split(' ')
+  const groupName = args[0]
+  const takeSize = args[1] || 1
+
+  const groupId = groupName.replace('<!subteam^', '').split('|')[0];
+  const members = await web.usergroups.users.list({usergroup: groupId}).then(members => members.users).catch(_e => {
+      // noop
+    }
+  )
+  if (members === undefined) {
+    await say(`グループが見つかりませんでした`)
+    return
+  }
+  // takeSizeに応じてメンバーを取得
+  const selectedMembers = shuffle(members).slice(0, takeSize)
+  const message = selectedMembers.map(m => `\`<@${m}|>\``).join(', ')
+
+  await say(message);
 });
 
 (async () => {
   // Start your app
   await app.start(process.env.PORT || 3000);
-
   console.log('⚡️ Bolt app is running!');
 })();
