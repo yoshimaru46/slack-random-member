@@ -54,3 +54,18 @@ See you there and thanks for helping to improve Bolt for everyone!
 [2]: https://slack.dev/bolt-js/
 [3]: https://slack.dev/bolt-js/tutorial/getting-started#setting-up-events
 [4]: https://github.com/slackapi/bolt-js/issues/new
+
+## デプロイ方法
+
+### 環境変数の設定
+
+```sh
+heroku config:set SLACK_SIGNING_SECRET=hoge
+heroku config:set SLACK_BOT_TOKEN=xoxb-fuga
+```
+
+### デプロイ
+
+```sh
+git push heroku master
+```
