@@ -48,7 +48,7 @@ app.command('/random', async ({command, ack, respond}) => {
   }
   // takeSizeに応じてメンバーを取得
   const selectedMembers = shuffle(members).slice(0, takeSize)
-  const message = selectedMembers.map(m => `\`<@${m}|>\``).join(', ')
+  const message = selectedMembers.map(m => `\`<@${m}>\``).join(', ')
 
   await respond(
     {response_type: "in_channel", text: message}
