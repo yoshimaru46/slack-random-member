@@ -24,12 +24,12 @@ function shuffle(arr) {
   return arr;
 }
 
-app.command('/random', async ({command, ack, respond}) => {
+app.command('/random', async ({command, ack, say}) => {
   // コマンドリクエストを確認
   await ack();
 
   if (command.text === '') {
-    await respond(`/random [@グループ名] [数] の形式で入力してください！`);
+    await say(`/random [@グループ名] [数] の形式で入力してください！`);
     return
   }
 
@@ -43,14 +43,14 @@ app.command('/random', async ({command, ack, respond}) => {
     }
   )
   if (members === undefined) {
-    await respond(`グループが見つかりませんでした`)
+    await say(`グループが見つかりませんでした`)
     return
   }
   // takeSizeに応じてメンバーを取得
   const selectedMembers = shuffle(members).slice(0, takeSize)
   const message = selectedMembers.map(m => `\`<@${m}|>\``).join(', ')
 
-  await respond(message);
+  await say(message);
 });
 
 (async () => {
