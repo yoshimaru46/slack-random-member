@@ -13,5 +13,8 @@
     "@slack/bolt": "^2.3.0",
     "@slack/events-api": "^3.0.0",
     "@slack/web-api": "^6.1.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1"
   }
 }
