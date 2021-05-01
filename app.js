@@ -30,15 +30,17 @@ function shuffle(arr) {
   return arr;
 }
 
-const token = process.env.SLACK_BOT_TOKEN;
-const signingSecret = process.env.SLACK_SIGNING_SECRET;
+const token =
+  process.env.SLACK_BOT_TOKEN || (await accessSecretVersion("slack-bot-token"));
+const signingSecret =
+  process.env.SLACK_SIGNING_SECRET ||
+  (await accessSecretVersion("slack-signing-secret"));
 
 const web = new WebClient(token);
 // Initializes your app with your bot token and signing secret
 const app = new App({
-  token: token || (await accessSecretVersion("slack-bot-token")),
-  signingSecret:
-    signingSecret || (await accessSecretVersion("slack-signing-secret")),
+  token,
+  signingSecret,
 });
 
 app.command("/random", async ({ command, ack, respond }) => {
