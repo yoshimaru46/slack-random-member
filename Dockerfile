@@ -1,4 +1,4 @@
-FROM node:10-slim
+FROM node:12-slim
 
 # Install app dependencies.
 COPY package.json /src/package.json
