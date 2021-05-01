@@ -1,8 +1,27 @@
-const { App } = require("@slack/bolt");
-const { WebClient } = require("@slack/web-api");
+import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
+import { WebClient } from "@slack/web-api";
+import { App } from "@slack/bolt";
 
-const token = process.env.SLACK_BOT_TOKEN;
-const signingSecret = process.env.SLACK_SIGNING_SECRET;
+/**
+ * Returns the secret string from Google Cloud Secret Manager
+ * @param {string} name The name of the secret.
+ * @return {payload} The string value of the secret.
+ */
+async function accessSecretVersion(name) {
+  const client = new SecretManagerServiceClient();
+  const projectId = process.env.PROJECT_ID;
+  const [version] = await client.accessSecretVersion({
+    name: `projects/${projectId}/secrets/${name}/versions/1`,
+  });
+  // Extract the payload as a string.
+  return version.payload.data.toString("utf8");
+}
+
+const token =
+  process.env.SLACK_BOT_TOKEN || (await accessSecretVersion("slack-bot-token"));
+const signingSecret =
+  process.env.SLACK_SIGNING_SECRET ||
+  (await accessSecretVersion("slack-signing-secret"));
 
 const web = new WebClient(token);
 // Initializes your app with your bot token and signing secret
