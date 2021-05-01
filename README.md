@@ -40,24 +40,14 @@ yarn run start
 
 ## How to deploy
 
-refs: https://slack.dev/bolt-js/ja-jp/deployments/heroku
+### Build Image
 
-### 1. Create heroku app
-
-```sh
-heroku create
+```shell
+gcloud builds submit --tag gcr.io/${PROJECT_ID}/slack-random-member
 ```
 
-### 2. Setup environment variables
+### Deploy
 
-```sh
-heroku config:set SLACK_SIGNING_SECRET=hoge
-heroku config:set SLACK_BOT_TOKEN=xoxb-fuga
-```
-
-### 2. Deploy
-
-```sh
-git push heroku master
-heroku ps:scale web=1
+```shell
+gcloud run deploy slack-random-member --image gcr.io/${PROJECT_ID}/slack-random-member --set-env-vars PROJECT_ID=${PROJECT_ID}
 ```

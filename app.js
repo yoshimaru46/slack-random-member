@@ -1,6 +1,6 @@
-import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
-import { WebClient } from "@slack/web-api";
-import { App } from "@slack/bolt";
+const { App } = require("@slack/bolt");
+const { WebClient } = require("@slack/web-api");
+const { SecretManagerServiceClient } = require("@google-cloud/secret-manager");
 
 /**
  * Returns the secret string from Google Cloud Secret Manager
