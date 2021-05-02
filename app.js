@@ -38,7 +38,9 @@ app.command("/random", async ({ command, ack, respond }) => {
   await ack();
 
   if (command.text === "") {
-    await respond(`/random [@グループ名] [数] の形式で入力してください！`);
+    await respond(
+      "Please enter in the following format, `/random [@user-group-name] [number] `"
+    );
     return;
   }
 
@@ -54,7 +56,7 @@ app.command("/random", async ({ command, ack, respond }) => {
       console.error(e);
     });
   if (members === undefined) {
-    await respond(`グループが見つかりませんでした`);
+    await respond(`User group could not be found.`);
     return;
   }
 
