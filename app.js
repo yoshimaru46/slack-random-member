@@ -1,46 +1,40 @@
-import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 import { WebClient } from "@slack/web-api";
 import { App } from "@slack/bolt";
+import { shuffle } from "./shuffle";
+import { accessSecretVersion } from "./gcpUtils";
 
-/**
- * Returns the secret string from Google Cloud Secret Manager
- * @param {string} name The name of the secret.
- * @return {payload} The string value of the secret.
- */
-async function accessSecretVersion(name) {
-  const client = new SecretManagerServiceClient();
-  const projectId = process.env.PROJECT_ID;
-  const [version] = await client.accessSecretVersion({
-    name: `projects/${projectId}/secrets/${name}/versions/1`,
-  });
-  // Extract the payload as a string.
-  return version.payload.data.toString("utf8");
-}
+const database = {};
 
-function shuffle(arr) {
-  let n = arr.length;
-  let temp, i;
-
-  while (n) {
-    i = Math.floor(Math.random() * n--);
-    temp = arr[n];
-    arr[n] = arr[i];
-    arr[i] = temp;
-  }
-  return arr;
-}
-
-const token =
-  process.env.SLACK_BOT_TOKEN || (await accessSecretVersion("slack-bot-token"));
-const signingSecret =
-  process.env.SLACK_SIGNING_SECRET ||
-  (await accessSecretVersion("slack-signing-secret"));
+// TODO
+let token = 'hoge'
 
 const web = new WebClient(token);
-// Initializes your app with your bot token and signing secret
+
 const app = new App({
-  token,
-  signingSecret,
+  signingSecret:
+    process.env.SLACK_SIGNING_SECRET ||
+    (await accessSecretVersion("slack-signing-secret")),
+  clientId:
+    process.env.SLACK_CLIENT_ID ||
+    (await accessSecretVersion("slack-client-id")),
+  clientSecret:
+    process.env.SLACK_CLIENT_SECRET ||
+    (await accessSecretVersion("slack-client-secret")),
+  stateSecret:
+    process.env.SLACK_STATE_SECRET ||
+    (await accessSecretVersion("slack-state-secret")),
+  scopes: ["commands"],
+  installationStore: {
+    storeInstallation: async (installation) => {
+      // 実際のデータベースに保存するために、ここのコードを変更
+      database[installation.team.id] = installation;
+      console.log("!!!");
+      console.dir(database, { depth: 5 });
+    },
+    fetchInstallation: async (installQuery) => {
+      return database[installQuery.teamId];
+    },
+  },
 });
 
 app.command("/random", async ({ command, ack, respond }) => {
@@ -67,6 +61,7 @@ app.command("/random", async ({ command, ack, respond }) => {
     await respond(`グループが見つかりませんでした`);
     return;
   }
+
   // takeSizeに応じてメンバーを取得
   const selectedMembers = shuffle(members).slice(0, takeSize);
   const message = selectedMembers.map((m) => `\`<@${m}>\``).join(", ");
