@@ -1,14 +1,9 @@
 import { WebClient } from "@slack/web-api";
 import { App } from "@slack/bolt";
 import { shuffle } from "./shuffle";
-import { accessSecretVersion } from "./gcpUtils";
+import { accessSecretVersion, find, store } from "./gcpUtils";
 
-const database = {};
-
-// TODO
-let token = 'hoge'
-
-const web = new WebClient(token);
+let web;
 
 const app = new App({
   signingSecret:
@@ -23,16 +18,17 @@ const app = new App({
   stateSecret:
     process.env.SLACK_STATE_SECRET ||
     (await accessSecretVersion("slack-state-secret")),
-  scopes: ["commands"],
+  scopes: ["commands", "usergroups:read"],
   installationStore: {
     storeInstallation: async (installation) => {
-      // 実際のデータベースに保存するために、ここのコードを変更
-      database[installation.team.id] = installation;
-      console.log("!!!");
-      console.dir(database, { depth: 5 });
+      await store(installation.team.id, installation);
     },
     fetchInstallation: async (installQuery) => {
-      return database[installQuery.teamId];
+      const installation = await find(installQuery.teamId);
+      if (installation) {
+        web = new WebClient(installation.bot.token);
+      }
+      return installation;
     },
   },
 });
@@ -54,8 +50,8 @@ app.command("/random", async ({ command, ack, respond }) => {
   const members = await web.usergroups.users
     .list({ usergroup: groupId })
     .then((members) => members.users)
-    .catch((_e) => {
-      // noop
+    .catch((e) => {
+      console.error(e);
     });
   if (members === undefined) {
     await respond(`グループが見つかりませんでした`);

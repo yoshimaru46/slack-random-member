@@ -1,4 +1,5 @@
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
+import { Datastore } from "@google-cloud/datastore";
 
 /**
  * Returns the secret string from Google Cloud Secret Manager
@@ -13,4 +14,22 @@ export const accessSecretVersion = async (name) => {
   });
   // Extract the payload as a string.
   return version.payload.data.toString("utf8");
+};
+
+// Creates a client
+const datastore = new Datastore();
+const kind = "Installation";
+
+export const store = async (id, data) => {
+  const taskKey = datastore.key([kind, id]);
+  const task = {
+    key: taskKey,
+    data,
+  };
+  await datastore.save(task);
+};
+
+export const find = async (id) => {
+  const taskKey = datastore.key([kind, id]);
+  return await datastore.get(taskKey).then((entity) => entity[0]);
 };
