@@ -33,7 +33,7 @@ const app = new App({
   },
 });
 
-app.command("/random", async ({ command, ack, respond }) => {
+app.command("/shufflet", async ({ command, ack, respond }) => {
   // コマンドリクエストを確認
   await ack();
 
