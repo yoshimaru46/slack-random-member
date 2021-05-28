@@ -6,6 +6,6 @@ WORKDIR /src
 RUN yarn
 
 # Bundle app source.
-COPY app.js gcpUtils.js shuffle.js /src/
+COPY app.js gcpUtils.js datastore.js shuffle.js /src/
 
 CMD ["node", "--es-module-specifier-resolution=node", "app.js"]

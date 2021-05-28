@@ -1,7 +1,8 @@
 import { WebClient } from "@slack/web-api";
 import { App } from "@slack/bolt";
 import { shuffle } from "./shuffle";
-import { accessSecretVersion, find, store } from "./gcpUtils";
+import { accessSecretVersion } from "./gcpUtils";
+import { find, store } from "./datastore";
 
 let web;
 
@@ -21,10 +22,12 @@ const app = new App({
   scopes: ["commands", "usergroups:read"],
   installationStore: {
     storeInstallation: async (installation) => {
-      await store(installation.team.id, installation);
+      const kind = "Installation";
+      await store(kind, installation.team.id, installation);
     },
     fetchInstallation: async (installQuery) => {
-      const installation = await find(installQuery.teamId);
+      const kind = "Installation";
+      const installation = await find(kind, installQuery.teamId);
       if (installation) {
         web = new WebClient(installation.bot.token);
       }
