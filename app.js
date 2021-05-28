@@ -57,6 +57,7 @@ Select the selected number of members.
 /shufflet [user group] [number] 
       `
     );
+    return;
   }
 
   const groupName = args[0];
