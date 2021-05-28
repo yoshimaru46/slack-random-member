@@ -45,6 +45,20 @@ app.command("/shufflet", async ({ command, ack, respond }) => {
   }
 
   const args = command.text.split(" ");
+  if (args[0] === "help") {
+    await respond(
+      `
+:wave: Need some help with /shufflet?
+
+Select 1 member from selected a user group
+/shufflet [user group]
+      
+Select the selected number of members.      
+/shufflet [user group] [number] 
+      `
+    );
+  }
+
   const groupName = args[0];
   const takeSize = args[1] || 1;
 
