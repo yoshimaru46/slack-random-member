@@ -55,7 +55,7 @@ Select a selected number of members.
   const args = command.text.split(" ");
 
   if (command.text === "" || args[0] === "help") {
-    await respond([HELP_TEXT, SUPPORT_TEXT].join(""));
+    await respond([HELP_TEXT, SUPPORT_TEXT].join("\n"));
     return;
   }
 
