@@ -40,26 +40,22 @@ app.command("/shufflet", async ({ command, ack, respond }) => {
   // コマンドリクエストを確認
   await ack();
 
-  if (command.text === "") {
-    await respond(
-      "Please enter in the following format, `/random [@user-group-name] [number] `"
-    );
-    return;
-  }
-
-  const args = command.text.split(" ");
-  if (args[0] === "help") {
-    await respond(
-      `
+  const HELP_TEXT = `
 :wave: Need some help with /shufflet?
 
 Select 1 member from selected a user group
 \`/shufflet [user group]\`
       
 Select a selected number of members.
-\`/shufflet [user group] [number]\` 
-      `
-    );
+\`/shufflet [user group] [number]\`
+`;
+  const SUPPORT_LINK = "https://forms.gle/gjCBiuYhohQNPuLe6";
+  const SUPPORT_TEXT = `<${SUPPORT_LINK}|Contact Support>`;
+
+  const args = command.text.split(" ");
+
+  if (command.text === "" || args[0] === "help") {
+    await respond([HELP_TEXT, SUPPORT_TEXT].join(""));
     return;
   }
 
