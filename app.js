@@ -53,7 +53,7 @@ app.command("/shufflet", async ({ command, ack, respond }) => {
 Select 1 member from selected a user group
 \`/shufflet [user group]\`
       
-Select the selected number of members.      
+Select a selected number of members.
 \`/shufflet [user group] [number]\` 
       `
     );
