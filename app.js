@@ -78,7 +78,7 @@ Select a selected number of members.
   const selectedMembers = shuffle(members).slice(0, takeSize);
   const message =
     selectedMembers.map((m) => `\`<@${m}>\``).join(", ") +
-    ` (from \`${groupName}\` by ${command.user_name})`;
+    ` (from \`${groupName.replace("@", "[at]")}\` by ${command.user_name})`;
 
   await respond({ response_type: "in_channel", text: message });
 });
