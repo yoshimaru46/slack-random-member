@@ -63,6 +63,7 @@ Select a selected number of members.
   const takeSize = args[1] || 1;
 
   const groupId = groupName.replace("<!subteam^", "").split("|")[0];
+  const groupHandle = groupName.split("|")[1].replace(">", "");
   const members = await web.usergroups.users
     .list({ usergroup: groupId })
     .then((members) => members.users)
@@ -78,7 +79,7 @@ Select a selected number of members.
   const selectedMembers = shuffle(members).slice(0, takeSize);
   const message =
     selectedMembers.map((m) => `\`<@${m}>\``).join(", ") +
-    ` (from \`${groupName.replace("@", "[at]")}\` by ${command.user_name})`;
+    ` (from \`${groupHandle}\` by ${command.user_name})`;
 
   await respond({ response_type: "in_channel", text: message });
 });
