@@ -76,7 +76,9 @@ Select a selected number of members.
 
   // takeSizeに応じてメンバーを取得
   const selectedMembers = shuffle(members).slice(0, takeSize);
-  const message = selectedMembers.map((m) => `\`<@${m}>\``).join(", ");
+  const message =
+    selectedMembers.map((m) => `\`<@${m}>\``).join(", ") +
+    `(from ${groupName} by ${command.user_name})`;
 
   await respond({ response_type: "in_channel", text: message });
 });
