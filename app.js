@@ -12,7 +12,7 @@ const app = new App({
     (await accessSecretVersion("slack-signing-secret")),
   clientId:
     process.env.SLACK_CLIENT_ID ||
-    (await accessSecretVersion("slack-client-id")),
+    (await accessSecretVersion("slack-client-id", 2)),
   clientSecret:
     process.env.SLACK_CLIENT_SECRET ||
     (await accessSecretVersion("slack-client-secret")),
@@ -45,7 +45,7 @@ app.command("/shufflet", async ({ command, ack, respond }) => {
 
 Select 1 member from selected a user group
 \`/shufflet [user group]\`
-      
+
 Select a selected number of members.
 \`/shufflet [user group] [number]\`
 `;
