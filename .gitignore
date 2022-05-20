@@ -64,3 +64,5 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.local
+.env.slack-random-member-2
